@@ -20,12 +20,16 @@ from my_site.configurations import regex
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 nltk.download('punkt')
 
+# Replace backward slash with forward slash
 def get_file_path(loc: pathlib.Path) -> str:
     return str(loc).replace('\\', '/')
 
 def get_file_name(filename: str) -> str:
     return filename.rsplit('\\')[1]
 
+"""
+Function to read and write the result of score matched with resume and job desc 
+"""
 def read_result_in_json(jobfile: str = 'job1') -> Dict:
     filepath = 'result/'
     with open(f'{filepath}{jobfile}.json', 'r') as openfile:
