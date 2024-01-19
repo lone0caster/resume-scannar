@@ -58,3 +58,19 @@ end_date = r'(('+month+not_alpha_numeric+r"?"+year+r')|(present))'+not_alpha_num
 longer_year = r"((20|19)(\d{2}))"
 year_range = longer_year+not_alpha_numeric+r"{1,3}"+longer_year
 date_range = r"("+start_date+not_alpha_numeric+r"{1,3}"+end_date+r")|("+year_range+r")"
+
+# Export the regex variable
+regex = {
+    'bullet': bullet,
+    'email': email,
+    'get_phone': get_phone,
+    'not_alpha_numeric': not_alpha_numeric,
+    'number': number,
+    'pincode': pincode,
+    'month': month,
+    'start_date': start_date,
+    'end_date': end_date,
+    'longer_year': longer_year,
+    'year_range': year_range,
+    'date_range': date_range,
+}

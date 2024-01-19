@@ -1,0 +1,21 @@
+<!-- mysite/job-single.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ q.title }} - {{ q.company_name }}</title>
+</head>
+<body>
+
+    <h1>{{ q.title }}</h1>
+    <p>Company: {{ q.company_name }}</p>
+    <p>Details: {{ q.details }}</p>
+    <p>Salary: {{q.salary}}</p>
+    <!-- Add more fields as needed -->
+
+    <a href="{% url 'job-listings' %}">Back to Job Listings</a>
+
+</body>
+</html>

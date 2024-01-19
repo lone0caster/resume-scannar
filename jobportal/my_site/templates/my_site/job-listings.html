@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MySite - Index</title>
+    <title>MySite - Job Listings</title>
 </head>
 <body>
 
-    <h1>Welcome to MySite</h1>
+    <h1>Job Listings</h1>
 
     <p>Total Jobs: {{ job_len }}</p>
     <p>Total Companies: {{ companies }}</p>
     <p>Total Candidates: {{ candidates }}</p>
 
-    {% for job in job_listings %}
+    {% for job in query %}
         <div>
+            <!-- <h2>Job No:- {{forloop.counter}}</h2> -->
             <h2>{{ job.title }}</h2>
             <p>{{ job.company_name }}</p>
             <!-- Add more details as needed -->
