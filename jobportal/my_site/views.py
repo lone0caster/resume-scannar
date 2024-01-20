@@ -60,6 +60,9 @@ def index(request):
     }
     return render(request, "my_site/index.html", context=context)
 
+def about(request):
+    return render(request, "about.html")
+
 
 def job_listings(request):
     job_list = Post_job.objects.get_queryset().order_by('id')
@@ -249,3 +252,12 @@ def job_single(request, id):
         'q': job_query,
     }
     return render(request, "my_site/job-single.html", context)
+
+def category(request):
+    return render(request, 'category.html')
+
+def testimonial(request):
+    return render(request, 'testimonial.html')
+
+def notFound(request):
+    return render(request, '404.html')

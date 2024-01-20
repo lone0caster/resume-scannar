@@ -1,8 +1,9 @@
 import re, unicodedata
 import inflect
 import nltk
-nltk.download('punkt')
-nltk.download('wordnet')
+# Download is done
+# nltk.download('punkt')
+# nltk.download('wordnet')
 from nltk.stem import LancasterStemmer, WordNetLemmatizer
 from stop_words import get_stop_words
 

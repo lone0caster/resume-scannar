@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySite - Job Listings</title>
+</head>
+<body>
+
+    <h1>Job Listings</h1>
+
+    <p>Total Jobs: {{ job_len }}</p>
+    <p>Total Companies: {{ companies }}</p>
+    <p>Total Candidates: {{ candidates }}</p>
+
+    {% for job in query %}
+        <div>
+            <!-- <h2>Job No:- {{forloop.counter}}</h2> -->
+            <h2>{{ job.title }}</h2>
+            <p>{{ job.company_name }}</p>
+            <!-- Add more details as needed -->
+            <a href="{% url 'job_single' id=job.id %}">View Job</a>
+        </div>
+    {% endfor %}
+
+    <!-- Pagination links -->
+    <div>
+        <span>Page {{ query.number }} of {{ query.paginator.num_pages }}.</span>
+        <span class="current">
+            Showing {{ curr_page1 }} - {{ curr_page2 }} of {{ job_len }} jobs.
+        </span>
+        {% if query.has_previous %}
+            <a href="?page={{ query.previous_page_number }}">previous</a>
+        {% endif %}
+        {% if query.has_next %}
+            <a href="?page={{ query.next_page_number }}">next</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>
