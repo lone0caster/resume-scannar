@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 
 # Create your models here.
 
@@ -55,7 +56,8 @@ class Post_job(models.Model):
     other_benefits = models.CharField(max_length = 100)
     job_location = models.CharField(max_length = 100)
     salary = models.CharField(max_length = 20, null = True, blank = True)
-    # image = models.ImageField(blank=True, upload_to='media', null=True)
+    image = models.ImageField(blank=True, upload_to='my_site/images', null=True)
+    datepost = models.DateTimeField(default=timezone.now().date)
     application_deadline = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
