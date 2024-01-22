@@ -1,0 +1,76 @@
+{% extends 'my_site/index.html'%}
+{%block css%}
+    .site-section{
+        margin-left: 70px;
+    }
+{% endblock%}
+{% block body %}
+<div class="container-xxl py-5 bg-dark page-header mb-5">
+    <div class="container my-5 pt-5 pb-4">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Post A Job</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb text-uppercase">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Apply Job</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">{{q.title}}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<section class="site-section">
+    <div class="container">
+        <div class="row col-lg-6 mb-5 mb-lg-0">
+            <h3 class="mb-4">Apply for the job</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Your name">
+                    </div>
+                    <div class="col-md-6">
+                        <label fro="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label" for="gender">Gender</label>
+                        <select name="gender" class="form-control" id="gender" class="selectpicker border rounded" data-style="btn-black" data-width="100%" data-live-search="true" title="Select Gender" required>
+                            <option >Male</option>
+                            <option >Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="experience" class="form-label">Experience</label>
+                        <input type="number" class="form-control" id="experience" name="experience" placeholder="0.0" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Portfolio Link</label>
+                        <input type="text" class="form-control" id="portfolio" name="portfolio"
+                            placeholder="Website/Portfolio link">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Upload CV</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="inputGroupFile03" name="resume"
+                                aria-describedby="inputGroupFileAddon03">
+                            <label class="input-group-text" for="inputGroupFile03">Upload</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Cover Letter</label>
+                        <textarea class="form-control" name="coverletter" id="coverletter" rows="5"
+                            placeholder="Cover letter"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100 mt-3" type="submit">Apply Now</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<br>
+
+
+{% endblock %}

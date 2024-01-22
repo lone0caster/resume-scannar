@@ -232,7 +232,7 @@ def check_basicRequirement(resumes_data, job_data):
 
     # resumes file path
     filepath = 'media/'
-    resumes = [str(item.cv) for item in resumes_data]
+    resumes = [str(item.resume) for item in resumes_data] # come here if any error
     print("resumes: ", resumes)
     resumes_new = [item.split(':')[0] for item in resumes]
     resumes_new = [item for item in resumes_new if item != '']
@@ -317,42 +317,77 @@ def check_basicRequirement(resumes_data, job_data):
     return Resumes, Ordered_list_Resume
 
 
+# def get_rank(result_dict=None):
+
+#     if result_dict == None:
+#         return {}
+
+#     # new_result_dict = sorted(result_dict.items(), key=lambda item: float(item[1]["score"]), reverse=False)
+#     new_result_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: getitem(item[1], 'score'), reverse=False))
+#     new_updated_result_dict = {}
+#     indx = 0
+#     for _, item in new_result_dict.items():
+#         item['rank'] = indx + 1
+#         new_updated_result_dict[indx] = item
+#         indx += 1
+#     return new_updated_result_dict
+
 def get_rank(result_dict=None):
 
-    if result_dict == None:
+    if result_dict is None:
         return {}
 
-    # new_result_dict = sorted(result_dict.items(), key=lambda item: float(item[1]["score"]), reverse=False)
-    new_result_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: getitem(item[1], 'score'), reverse=False))
+    # Check if result_dict is a list
+    if isinstance(result_dict, list):
+        # Convert the list to a dictionary with index as the key
+        result_dict = {index: item for index, item in enumerate(result_dict)}
+
+    # Sort the result_dict based on the 'score' key
+    new_result_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1].get('score', 0), reverse=False))
     new_updated_result_dict = {}
-    indx = 0
-    for _, item in new_result_dict.items():
+
+    for indx, (_, item) in enumerate(new_result_dict.items()):
         item['rank'] = indx + 1
         new_updated_result_dict[indx] = item
-        indx += 1
+
     return new_updated_result_dict
 
 
+# def show_rank(result_dict=None, jobfileName='job1', top_k=20):
+#     if (result_dict == None):
+#         filepath = 'result/' + jobfileName + '.json'
+#         result_dict = read_result_in_json(filepath)
+#     print("\nResult:")
+#     for _, result in result_dict.items():
+#         # print(result)
+#         print(f"Rank: {result['rank']}\t Total Score:{round(result['score'], 5)} (NN distance) \tName:{result['name']}")
+
 def show_rank(result_dict=None, jobfileName='job1', top_k=20):
-    if (result_dict == None):
-        filepath = 'result/' + jobfileName + '.json'
-        result_dict = read_result_in_json(filepath)
+    if result_dict is None:
+        print("No result to display.")
+        return
+
+    # Ensure result_dict is a dictionary
+    if not isinstance(result_dict, dict):
+        print("Invalid result_dict format.")
+        return
+
     print("\nResult:")
-    for _, result in result_dict.items():
-        # print(result)
-        print(f"Rank: {result['rank']}\t Total Score:{round(result['score'], 5)} (NN distance) \tName:{result['name']}")
+    # Iterate through the sorted result_dict
+    for rank, (_, result) in enumerate(sorted(result_dict.items(), key=lambda item: item[1]['score'], reverse=False)):
+        print(f"Rank: {rank + 1}\t Total Score: {round(result['score'], 5)} (NN distance) \tName: {result['name']}")
 
 
 # start parsing
 # result
-def res(resumes_data, job_data):
-    result_arr = dict()
-    print("Resumes: ", resumes_data.values('cv'))
+def res(resumes_data=None, job_data=None):
+    result_arr = []
+    print("Resumes: ", resumes_data.values('resume'))
 
     # checking basic requirements
     Resumes, Ordered_list_Resume = check_basicRequirement(resumes_data, job_data)
 
-    if not Ordered_list_Resume or not Resumes:
+    if resumes_data is None or job_data is None:
         return result_arr
 
     # job-description
@@ -411,7 +446,7 @@ def res(resumes_data, job_data):
         # score = round(neigh.kneighbors(Job_Desc)[0][0][0], 5)
         score = neigh.kneighbors(Job_Desc)[0][0][0]
         # print(score)
-        result_arr[indx] = {'name': name, 'score': score}
+        result_arr.append({'name': name, 'score': score})
 
     result_arr = get_rank(result_arr)
     show_rank(result_arr, jobfilename)

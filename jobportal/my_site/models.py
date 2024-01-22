@@ -57,7 +57,8 @@ class Post_job(models.Model):
     job_location = models.CharField(max_length = 100)
     salary = models.CharField(max_length = 20, null = True, blank = True)
     image = models.ImageField(blank=True, upload_to='my_site/images', null=True)
-    datepost = models.DateTimeField(default=timezone.now().date)
+    # datepost = models.DateTimeField(default=timezone.now().date)
+    datepost = models.DateTimeField(default=timezone.now)
     application_deadline = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -72,7 +73,7 @@ class Apply_job(models.Model):
     email = models.EmailField(max_length = 100)
     gender = models.CharField(choices = CANDIDATE_GENDER, max_length = 20, default = 'Male')
     experience = models.FloatField(default = 0.0)
-    resume = models.FileField(default = "")
+    resume = models.FileField(upload_to='my_site/resume', default = "")
     coverletter = models.CharField(max_length = 200)
     company_name = models.CharField(max_length = 100)
     title = models.CharField(max_length = 100)

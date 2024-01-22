@@ -56,8 +56,11 @@
                         </div>
         
                         <div class="">
-                            <h4 class="mb-4">Apply For The Job</h4>
-                            <form>
+                            <a href="{%url 'applyjob' id=q.id %}" class="btn btn-primary">Apply Now</a>
+                            <div class="col-6">
+                                <a href="{% url 'ranking' id=q.id %}" class="btn btn-block btn-primary btn-md">See Rank</a>
+                              </div>
+                            <!-- <form>
                                 <div class="row g-3">
                                     <div class="col-12 col-sm-6">
                                         <input type="text" class="form-control" placeholder="Your Name">
@@ -78,7 +81,7 @@
                                         <button class="btn btn-primary w-100" type="submit">Apply Now</button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
                     </div>
         
