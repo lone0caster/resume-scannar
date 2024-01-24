@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2>Resume Details</h2>
+        <dl class="row">
+            <dt class="col-sm-3">Candidate Name</dt>
+            <dd class="col-sm-9">{{ apply_job.name }}</dd>
+
+            <dt class="col-sm-3">Resume File</dt>
+            <dd class="col-sm-9">
+                <a href="{{ apply_job.resume.url }}" target="_blank">{{ apply_job.resume.name }}</a>
+            </dd>
+
+            <!-- Add more details as needed -->
+        </dl>
+    </div>
+{% endblock %}

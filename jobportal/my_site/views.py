@@ -15,6 +15,7 @@ from my_site.models import Post_job
 from my_site.models import Apply_job
 import my_site.screen as screen
 from django.conf import settings
+from my_site.utils import extract_text_from_pdf
 import os
 import PyPDF2
 from my_site.models import Apply_job
@@ -217,52 +218,12 @@ def ranking(request, id):
     resumes_data = Apply_job.objects.filter(company_name=job_data.company_name, title=job_data.title,
                                             resume__isnull=False)
     result_arr = screen.res(resumes_data, job_data)
-    print(result_arr)
+    print(resumes_data)
+    for data in resumes_data:
+        print(data)
+    # print(result_arr)
     return render(request, 'my_site/ranking.html',
-                  {'items': result_arr, 'company_name': job_data.company_name, 'title': job_data.title})
-
-# def ranking(request, id):
-#     job_data = Post_job.objects.get(id=id)
-#     print(job_data.id, job_data.title, job_data.company_name)
-#     jobfilename = job_data.company_name + '_' + job_data.title + '.txt'
-
-#     # Store multiple strings in a list
-#     job_desc = [job_data.details, job_data.responsibilities, job_data.experience]
-
-#     resumes_data = Apply_job.objects.filter(company_name=job_data.company_name, title=job_data.title,
-#                                             resume__isnull=False)
-
-#     # Extract cover letters from resumes_data
-#     coverletters = [apply_job.coverletter for apply_job in resumes_data]
-
-#     # Combine job_desc and coverletters into a list of strings
-#     all_documents = job_desc + coverletters
-
-#     # Create a TfidfVectorizer and transform the documents
-#     vectorizer = TfidfVectorizer(stop_words='english')
-#     tfidf_matrix = vectorizer.fit_transform(all_documents)
-
-#     # Calculate cosine similarity between job_desc and coverletters
-#     cosine_similarities = linear_kernel(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
-
-#     # Sort the documents by similarity
-#     document_scores = list(zip(range(1, len(cosine_similarities) + 1), cosine_similarities))
-#     document_scores.sort(key=lambda x: x[1], reverse=True)
-
-#     # Get the sorted list of items
-#     result_arr = [item[0] for item in document_scores]
-
-#     return render(request, 'my_site/ranking.html',
-#                   {'items': result_arr, 'company_name': job_data.company_name, 'title': job_data.title})
-
-# def extract_text_from_pdf(pdf_path):
-#     with open(pdf_path, 'rb') as pdf_file:
-#         pdf_reader = PyPDF2.PdfReader(pdf_file)
-#         text = ''
-#         for page_number in range(len(pdf_reader.pages)):
-#             page = pdf_reader.pages[page_number]
-#             text += page.extract_text()
-#         return text
+                  {'items': result_arr, 'company_name': job_data.company_name, 'title': job_data.title, 'candidate_name': resumes_data})
 
 # def ranking(request, id):
 #     try:
@@ -286,8 +247,6 @@ def ranking(request, id):
 
 #                 # Compare job description and resume using TF-IDF or any other similarity measure
 #                 # You might want to customize this part based on your specific scoring logic
-#                 # ...
-
 #                 # For demonstration purposes, calculate a simple score
 #                 score = len(set(job_desc_normalized.split()) & set(resume_text_normalized.split()))
 
@@ -297,7 +256,6 @@ def ranking(request, id):
 #                 print(f"Error extracting text from resume {apply_job.name}: {e}")
 
 #         # Rank candidates and update result_dict
-#         # ranked_result_dict = screen.res(resumes_data=list(result_dict.values()), job_data=job_data)
 #         ranked_result_dict = screen.res(resumes_data=result_dict, job_data=job_data)
 
 #         # Save the result_dict to a JSON file
@@ -308,6 +266,7 @@ def ranking(request, id):
 #     except Exception as e:
 #         print(f"Error in ranking function: {e}")
 #         return HttpResponse("Error in ranking function")
+
     
 class SearchView(ListView):
     model = Post_job
@@ -325,6 +284,11 @@ def job_single(request, id):
         'q': job_query,
     }
     return render(request, "my_site/job-single.html", context)
+
+# View the individual candidate resume
+def view_resume(request, apply_job_id):
+    apply_job = get_object_or_404(Apply_job, id=apply_job_id)
+    return render(request, 'my_site/view_resume.html', {'apply_job': apply_job})
 
 def category(request):
     return render(request, 'category.html')

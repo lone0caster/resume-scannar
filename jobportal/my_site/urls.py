@@ -13,6 +13,7 @@ from my_site.views import (
     category,
     testimonial,
     notFound,
+    view_resume
 )
 
 urlpatterns = [
@@ -27,5 +28,6 @@ urlpatterns = [
     path('search/', SearchView.as_view(), name='search'),
     path('category/', category, name="category"),
     path('testimonial/', testimonial, name="testimonial"),
+    path('view_resume/<int:apply_job_id>/', view_resume, name='view_resume'),
     path('notFound/', notFound, name="404")
 ]
