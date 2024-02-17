@@ -1,0 +1,35 @@
+{% extends 'my_site/index.html'%}
+{% block css%}
+    .site-section{
+        height: 100%;
+    }
+{% endblock%}
+
+{%block body%}
+<section class="site-section">
+    <div class="container mt-5">
+        <h2>Ranking for {{ company_name }} - {{ title }}</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Candidate Name</th>
+                    <th>Ranking Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key,item in items.items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.score }}</td>
+                        <!-- <td>
+                            <a href="{% url 'view_resume' key %}" class="btn btn-primary">View Resume</a>
+                        </td> -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+
