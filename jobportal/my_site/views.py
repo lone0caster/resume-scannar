@@ -64,6 +64,7 @@ def index(request):
     }
     return render(request, "my_site/index.html", context=context)
 
+
 def about(request):
     return render(request, "my_site/about.html")
 
