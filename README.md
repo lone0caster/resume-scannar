@@ -1,2 +1,3 @@
 # resume-scannar-frontend-with-theme
-This is a resume scannar  frontend made with html and css  
+HireWise.ai
+This is our AI Resume Scanner and Ranking System that rank the appliciant based on the job description provide by the Recruiter.
