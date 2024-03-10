@@ -1,4 +1,3 @@
-# resume-scannar-frontend-with-theme
 # HireWise.ai
 # This is our AI Resume Scanner and Ranking System that rank the appliciant based on the job description provide by the Recruiter.
 It is recommended to use virtual environment packages such as virtualenv. Follow the steps below to setup the project:
