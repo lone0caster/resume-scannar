@@ -64,8 +64,9 @@ def index(request):
     }
     return render(request, "my_site/index.html", context=context)
 
+
 def about(request):
-    return render(request, "about.html")
+    return render(request, "my_site/about.html")
 
 
 def job_listings(request):
@@ -178,13 +179,14 @@ def applyjob(request, id):
         gender = request.POST['gender']
         experience = request.POST['experience']
         coverletter = request.POST['coverletter']
-        
+        github = request.POST['github']
+        linkedin = request.POST['linkedin']
         # Handling file upload (resume)
         resume = request.FILES['resume']
         print(resume)
 
         # Deleting existing application for the same user, company, and job title
-        Apply_job.objects.filter(name=name, email__exact=email, company_name=job.company_name, title=job.title).delete()
+        Apply_job.objects.filter(name=name, email__exact=email, company_name=job.company_name, title=job.title, linkedin = linkedin, github = github).delete()
 
         # Creating a new application instance
         ins = Apply_job(
@@ -195,12 +197,14 @@ def applyjob(request, id):
             coverletter=coverletter,
             company_name=job.company_name,
             gender=gender,
-            title=job.title
+            title=job.title,
+            linkedin = linkedin, 
+            github = github
         )
 
         # Saving the new application instance to the database
         ins.save()
-
+        print(f"GitHub ID is {github}, linkedin id is {linkedin}")
         # Displaying a success message and redirecting to the job listings
         messages.info(request, 'Successfully applied for the post!')
         print("The Data is saved into the database!")
@@ -218,55 +222,14 @@ def ranking(request, id):
     resumes_data = Apply_job.objects.filter(company_name=job_data.company_name, title=job_data.title,
                                             resume__isnull=False)
     result_arr = screen.res(resumes_data, job_data)
-    print(resumes_data)
+    # print("Job Filename is: ", jobfilename)
+    # print("Job description is: ",job_desc)
+    # print(resumes_data)
     for data in resumes_data:
         print(data)
     # print(result_arr)
     return render(request, 'my_site/ranking.html',
                   {'items': result_arr, 'company_name': job_data.company_name, 'title': job_data.title, 'candidate_name': resumes_data})
-
-# def ranking(request, id):
-#     try:
-#         job_data = Post_job.objects.get(id=id)
-#         jobfilename = job_data.company_name + '_' + job_data.title + '.txt'
-#         job_desc = job_data.details + '\n' + job_data.responsibilities + '\n' + job_data.experience + '\n'
-
-#         # Normalize job description
-#         job_desc_normalized = ' '.join(normalize(job_desc.split()))
-
-#         # Create a dictionary to store results
-#         result_dict = {}
-
-#         # Iterate over resumes and calculate scores
-#         for apply_job in Apply_job.objects.filter(company_name=job_data.company_name, title=job_data.title,
-#                                                   resume__isnull=False):
-#             resume_path = str(apply_job.resume.path)
-#             try:
-#                 resume_text = extract_text_from_pdf(resume_path)
-#                 resume_text_normalized = ' '.join(normalize(resume_text.split()))
-
-#                 # Compare job description and resume using TF-IDF or any other similarity measure
-#                 # You might want to customize this part based on your specific scoring logic
-#                 # For demonstration purposes, calculate a simple score
-#                 score = len(set(job_desc_normalized.split()) & set(resume_text_normalized.split()))
-
-#                 result_dict[apply_job.name] = {'name': apply_job.name, 'score': score}
-
-#             except Exception as e:
-#                 print(f"Error extracting text from resume {apply_job.name}: {e}")
-
-#         # Rank candidates and update result_dict
-#         ranked_result_dict = screen.res(resumes_data=result_dict, job_data=job_data)
-
-#         # Save the result_dict to a JSON file
-#         write_result_in_json(ranked_result_dict, jobfilename)
-
-#         return render(request, 'my_site/ranking.html',
-#                       {'items': ranked_result_dict, 'company_name': job_data.company_name, 'title': job_data.title})
-#     except Exception as e:
-#         print(f"Error in ranking function: {e}")
-#         return HttpResponse("Error in ranking function")
-
     
 class SearchView(ListView):
     model = Post_job
@@ -287,7 +250,7 @@ def job_single(request, id):
 
 # View the individual candidate resume
 def view_resume(request, apply_job_id):
-    apply_job = get_object_or_404(Apply_job, id=apply_job_id)
+    apply_job = Apply_job.objects.get(id=apply_job_id + 1)
     return render(request, 'my_site/view_resume.html', {'apply_job': apply_job})
 
 def category(request):

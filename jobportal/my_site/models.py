@@ -75,6 +75,8 @@ class Apply_job(models.Model):
     experience = models.FloatField(default = 0.0)
     # resume = models.FileField(upload_to='my_site/resume', default = "")
     resume = models.FileField(default = "")
+    linkedin = models.CharField(max_length = 100, default = 0)
+    github = models.CharField(max_length = 100, default = 0)
     coverletter = models.CharField(max_length = 200)
     company_name = models.CharField(max_length = 100)
     title = models.CharField(max_length = 100)

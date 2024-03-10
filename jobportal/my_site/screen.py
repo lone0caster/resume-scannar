@@ -215,122 +215,162 @@ def findWorkAndEducation(text, name) -> Dict[str, List[str]]:
     return exp_list
 
 
+# def check_basicRequirement(resumes_data, job_data):
+#     # print(job_experience)
+#     Ordered_list_Resume = []
+#     Resumes = []
+#     Temp_pdf = []
+#     # print(int(job_data.experience.split(' ')[0].split('-')[0]))
+#     # print(len(resumes_data))
+#     # filter resumes based on the gender
+#     resumes_data = resumes_data.filter(experience__gte=float(job_data.experience.split(' ')[0].split('-')[0]))
+#     print(len(resumes_data))
+#     if job_data.gender == 'Male':
+#         resumes_data = resumes_data.filter(gender='Male')
+#     elif job_data.gender == 'Female':
+#         resumes_data = resumes_data.filter(gender='Female')
+
+#     # resumes file path
+#     filepath = 'media/'
+#     resumes = [str(item.resume) for item in resumes_data] # come here if any error
+#     print("resumes: ", resumes)
+#     resumes_new = [item.split(':')[0] for item in resumes]
+#     resumes_new = [item for item in resumes_new if item != '']
+
+#     LIST_OF_FILES = resumes_new
+
+#     print("Total Files to Parse\t", len(LIST_OF_FILES))
+#     print("####### PARSING ########")
+#     for indx, file in enumerate(LIST_OF_FILES):
+#         print(indx, file)
+#         if not pathlib.Path(filepath+file).is_file():
+#             continue
+#         Ordered_list_Resume.append(file)
+
+#         Temp = file.split('.')
+#         print(Temp)
+
+#         if Temp[1] == "pdf" or Temp[1] == "Pdf" or Temp[1] == "PDF":
+#             try:
+#                 # print("This is PDF", indx)
+#                 with open(filepath + file, 'rb') as pdf_file:
+#                     # read_pdf = PyPDF2.PdfFileReader(pdf_file)
+
+#                     read_pdf = PyPDF2.PdfReader(pdf_file, strict=False)
+#                     # print("resume", indx,": ", read_pdf)
+#                     number_of_pages = len(read_pdf.pages)
+#                     for page_number in range(number_of_pages):
+#                         page = read_pdf.pages[page_number]
+#                         page_content = page.extract_text()
+#                         # print(page_content)
+#                         page_content = page_content.replace('\n', ' ').replace('\f', '').replace('\\uf[0-9]+',
+#                                                                                                  '').replace(
+#                             '\\u[0-9]+', '').replace('\\ufb[0-9]+', '')
+#                         # page_content.replace("\r", "")
+
+#                         Temp_pdf = str(Temp_pdf) + str(page_content)
+
+#                         # print(Temp_pdf)
+
+#                         Resumes.extend([Temp_pdf])
+
+#                     # if getTotalExperienceFormatted(Temp_pdf,  job_data.experience):
+#                     #     Resumes.extend([Temp_pdf])
+
+#                     Temp_pdf = ''
+
+#                     # f = open(str(i)+str("+") , 'w')
+#                     # f.write(page_content)
+#                     # f.close()
+#             except Exception as e:
+#                 print(e)
+
+#         if Temp[1] == "doc" or Temp[1] == "Doc" or Temp[1] == "DOC":
+#             # print("This is DOC", file)
+
+#             try:
+#                 a = textract.process(filepath)
+#                 a = a.replace(b'\n', b' ')
+#                 a = a.replace(b'\r', b' ')
+#                 b = str(a)
+#                 c = [b]
+#                 Resumes.extend(c)
+#             except Exception as e:
+#                 print(e)
+
+#         if Temp[1] == "docx" or Temp[1] == "Docx" or Temp[1] == "DOCX":
+#             # print("This is DOCX", file)
+#             try:
+#                 a = textract.process(filepath + file)
+#                 a = a.replace(b'\n', b' ')
+#                 a = a.replace(b'\r', b' ')
+#                 b = str(a)
+#                 c = [b]
+#                 Resumes.extend(c)
+#             except Exception as e:
+#                 print(e)
+
+#         if Temp[1] == "exe" or Temp[1] == "Exe" or Temp[1] == "EXE":
+#             # print("This is EXE", file)
+#             pass
+#     print("Done Parsing.")
+#     return Resumes, Ordered_list_Resume
+
 def check_basicRequirement(resumes_data, job_data):
-    # print(job_experience)
+    if not hasattr(job_data, 'experience'):
+        # Handle the case where job_data doesn't have an experience attribute
+        return [], []
+
     Ordered_list_Resume = []
     Resumes = []
     Temp_pdf = []
-    # print(int(job_data.experience.split(' ')[0].split('-')[0]))
-    # print(len(resumes_data))
-    # filter resumes based on the gender
-    resumes_data = resumes_data.filter(experience__gte=float(job_data.experience.split(' ')[0].split('-')[0]))
-    print(len(resumes_data))
-    if job_data.gender == 'Male':
-        resumes_data = resumes_data.filter(gender='Male')
-    elif job_data.gender == 'Female':
-        resumes_data = resumes_data.filter(gender='Female')
 
-    # resumes file path
+    # Filter resumes based on the experience requirement
+    resumes_data = resumes_data.filter(experience__gte=float(job_data.experience.split(' ')[0].split('-')[0]))
+
+    # Filter resumes based on gender if specified
+    if hasattr(job_data, 'gender'):
+        if job_data.gender == 'Male':
+            resumes_data = resumes_data.filter(gender='Male')
+        elif job_data.gender == 'Female':
+            resumes_data = resumes_data.filter(gender='Female')
+
     filepath = 'media/'
-    resumes = [str(item.resume) for item in resumes_data] # come here if any error
-    print("resumes: ", resumes)
+    resumes = [str(item.resume) for item in resumes_data if hasattr(item, 'resume')]
     resumes_new = [item.split(':')[0] for item in resumes]
     resumes_new = [item for item in resumes_new if item != '']
 
     LIST_OF_FILES = resumes_new
 
-    print("Total Files to Parse\t", len(LIST_OF_FILES))
-    print("####### PARSING ########")
     for indx, file in enumerate(LIST_OF_FILES):
-        print(indx, file)
-        if not pathlib.Path(filepath+file).is_file():
+        # Process each file
+        if not pathlib.Path(filepath + file).is_file():
             continue
         Ordered_list_Resume.append(file)
 
         Temp = file.split('.')
-        print(Temp)
-
-        if Temp[1] == "pdf" or Temp[1] == "Pdf" or Temp[1] == "PDF":
+        # Process each file based on its type
+        if Temp[1].lower() in ["pdf", "doc", "docx"]:
             try:
-                # print("This is PDF", indx)
                 with open(filepath + file, 'rb') as pdf_file:
-                    # read_pdf = PyPDF2.PdfFileReader(pdf_file)
-
                     read_pdf = PyPDF2.PdfReader(pdf_file, strict=False)
-                    # print("resume", indx,": ", read_pdf)
                     number_of_pages = len(read_pdf.pages)
                     for page_number in range(number_of_pages):
                         page = read_pdf.pages[page_number]
                         page_content = page.extract_text()
-                        # print(page_content)
-                        page_content = page_content.replace('\n', ' ').replace('\f', '').replace('\\uf[0-9]+',
-                                                                                                 '').replace(
+                        page_content = page_content.replace('\n', ' ').replace('\f', '').replace('\\uf[0-9]+', '').replace(
                             '\\u[0-9]+', '').replace('\\ufb[0-9]+', '')
-                        # page_content.replace("\r", "")
 
                         Temp_pdf = str(Temp_pdf) + str(page_content)
 
-                        # print(Temp_pdf)
-
-                        Resumes.extend([Temp_pdf])
-
-                    # if getTotalExperienceFormatted(Temp_pdf,  job_data.experience):
-                    #     Resumes.extend([Temp_pdf])
-
+                    Resumes.extend([Temp_pdf])
                     Temp_pdf = ''
-
-                    # f = open(str(i)+str("+") , 'w')
-                    # f.write(page_content)
-                    # f.close()
             except Exception as e:
                 print(e)
 
-        if Temp[1] == "doc" or Temp[1] == "Doc" or Temp[1] == "DOC":
-            # print("This is DOC", file)
-
-            try:
-                a = textract.process(filepath)
-                a = a.replace(b'\n', b' ')
-                a = a.replace(b'\r', b' ')
-                b = str(a)
-                c = [b]
-                Resumes.extend(c)
-            except Exception as e:
-                print(e)
-
-        if Temp[1] == "docx" or Temp[1] == "Docx" or Temp[1] == "DOCX":
-            # print("This is DOCX", file)
-            try:
-                a = textract.process(filepath + file)
-                a = a.replace(b'\n', b' ')
-                a = a.replace(b'\r', b' ')
-                b = str(a)
-                c = [b]
-                Resumes.extend(c)
-            except Exception as e:
-                print(e)
-
-        if Temp[1] == "exe" or Temp[1] == "Exe" or Temp[1] == "EXE":
-            # print("This is EXE", file)
-            pass
     print("Done Parsing.")
     return Resumes, Ordered_list_Resume
 
-
-# def get_rank(result_dict=None):
-
-#     if result_dict == None:
-#         return {}
-
-#     # new_result_dict = sorted(result_dict.items(), key=lambda item: float(item[1]["score"]), reverse=False)
-#     new_result_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: getitem(item[1], 'score'), reverse=False))
-#     new_updated_result_dict = {}
-#     indx = 0
-#     for _, item in new_result_dict.items():
-#         item['rank'] = indx + 1
-#         new_updated_result_dict[indx] = item
-#         indx += 1
-#     return new_updated_result_dict
 
 def get_rank(result_dict=None):
 
@@ -447,6 +487,7 @@ def res(resumes_data=None, job_data=None):
         score = neigh.kneighbors(Job_Desc)[0][0][0]
         # print(score)
         result_arr.append({'name': name, 'score': score})
+        print(name)
 
     result_arr = get_rank(result_arr)
     show_rank(result_arr, jobfilename)

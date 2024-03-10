@@ -12,19 +12,24 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>Rank</th>
                     <th>Candidate Name</th>
-                    <th>Ranking Score</th>
+                    <th>KNN Score</th>
+                    <th>Resume</th>
                 </tr>
             </thead>
             <tbody>
-                {% for key,item in items.items %}
+                {% for key, item in items.items %}
                     <tr>
+                        <td>{{ item.rank}}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.score }}</td>
-                        <!-- <td>
+                        <td>
                             <a href="{% url 'view_resume' key %}" class="btn btn-primary">View Resume</a>
-                        </td> -->
+                        </td>
                     </tr>
+                        
+
                 {% endfor %}
             </tbody>
         </table>
