@@ -1,0 +1,6 @@
+django
+sklearn
+nltk
+PyPDF2
+pandas
+pdfminer

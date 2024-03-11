@@ -204,7 +204,7 @@ def applyjob(request, id):
 
         # Saving the new application instance to the database
         ins.save()
-        print(f"GitHub ID is {github}, linkedin id is {linkedin}")
+        # print(f"GitHub ID is {github}, linkedin id is {linkedin}")
         # Displaying a success message and redirecting to the job listings
         messages.info(request, 'Successfully applied for the post!')
         print("The Data is saved into the database!")
