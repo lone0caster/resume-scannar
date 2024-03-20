@@ -3,6 +3,17 @@
     .site-section{
         height: 100%;
     }
+    .graph-container {
+        background-color: white;
+        border: 1px solid #ccc; /* Add border */
+        float: left; /* Align to left */
+        margin-right: 20px; /* Add some margin for spacing */
+        z-index: 1;
+    }
+    h2{
+        margin: 10px;
+        padding: 5px;
+    }
 {% endblock%}
 
 {%block body%}
@@ -25,7 +36,7 @@
                         <td>{{ item.name }}</td>
                         <td>{{ item.score }}</td>
                         <td>
-                            <a href="{% url 'view_resume' key %}" class="btn btn-primary">View Resume</a>
+                            <a href="{% url 'view_resume' item.name %}" class="btn btn-primary">View Resume</a>
                         </td>
                     </tr>
                         
@@ -33,8 +44,50 @@
                 {% endfor %}
             </tbody>
         </table>
+        
+        <div class = "graph-container">
+            <canvas id="rankingChart" width="700" height="400" style="display: block; box-sizing: border-box; height: 320px; width: 550px;"></canvas>
+        </div>      
     </div>
 </section>
+{% endblock %}
+
+{% block js%}
+<!-- JavaScript for Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Get data for the chart from Django template variables
+    var candidates = [];
+    var scores = [];
+    {% for key, item in items.items %}
+        candidates.push("{{ item.name }}");
+        scores.push("{{ item.score }}");
+    {% endfor %}
+
+    // Initialize Chart.js and create a bar chart
+    var ctx = document.getElementById('rankingChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: candidates,  // Candidate names
+            datasets: [{
+                label: 'KNN Score',
+                data: scores,      // Scores
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
 
 

@@ -1,0 +1,12 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="resume">
+    <input type="submit" value="Upload Resume">
+  </form>
+  
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="user_question" placeholder="Ask a question">
+    <input type="submit" value="Ask">
+</form>
+  
