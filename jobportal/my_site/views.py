@@ -33,6 +33,14 @@ from my_site.text_process import normalize
 import re
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
+#importing linkedin bot
+from my_site.linkedin import LinkedInBot
+# importing nltk and sentiment analyzer
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Download VADER lexicon for sentiment analysis
+nltk.download('vader_lexicon')
 
 load_dotenv()
 os.getenv("GOOGLE_API_KEY")
@@ -268,15 +276,57 @@ def job_single(request, id):
     }
     return render(request, "my_site/job-single.html", context)
 
-# View the individual candidate resume
-# def view_resume(request, apply_job_id):
-#     apply_job = Apply_job.objects.get(id=apply_job_id)
-#     return render(request, 'my_site/view_resume.html', {'apply_job': apply_job})
+
+# View Resume function with sentiment calculation
+# Initializing Sentiment Intensity Analyzer
+sia = SentimentIntensityAnalyzer()
+
+# Function to perform sentiment analysis on text
+def analyze_sentiment(text):
+    # print("Textinh", text)
+    # Checking for None or NaN value 
+    # if it's getting true then return netural or 0.0
+    if text is None:
+        return {'compound' : 0.0}
+    sentiment_score = sia.polarity_scores(text)
+    return sentiment_score
 
 def view_resume(request, candidate_name):
     print(candidate_name)
     apply_job = Apply_job.objects.get(resume=candidate_name)
-    return render(request, 'my_site/view_resume.html', {'apply_job': apply_job})
+    # print(apply_job.linkedin)
+    linkedin_url = apply_job.linkedin
+    # Example usage:
+    bot = LinkedInBot()
+    # bot.open_url('https://www.linkedin.com/in/meetsatra/')
+    bot.open_url(linkedin_url)
+    linkedin_profile = bot.scrape_data()  # Scrape the title first
+    experiences_text = bot.scrape_experience()  # Scrape the experiences
+    education_text = bot.scrape_education()  # Scrape the education
+    activities_text = bot.scrape_activities()  # Scrape and clean the activities
+    certifications_text = bot.scrape_certifications()  # Scrape the certificates
+
+    # Anslyze sentiment for different sections of the LinkedIn Profile
+    experience_sentiment = analyze_sentiment(experiences_text)
+    activities_sentiment = analyze_sentiment(activities_text)
+    certification_sentiment = analyze_sentiment(certifications_text)
+    
+    print(experience_sentiment['compound'], activities_sentiment['compound'], certification_sentiment['compound'])
+    print("Printing profile: ", linkedin_profile)
+
+    # Dictionary for rendering in the template
+    context = {
+        'apply_job' : apply_job,
+        'profile' : linkedin_profile,
+        'experience': experiences_text,
+        'education' : education_text,
+        'activities' : activities_text,
+        'certification' : certifications_text,
+        'experience_sentiment' : experience_sentiment['compound'],
+        'activities_sentiment' : activities_sentiment['compound'],
+        'certifications_sentiment' : certification_sentiment['compound'],
+    }
+    return render(request, 'my_site/view_resume.html', context)
 
 def category(request):
     return render(request, 'category.html')

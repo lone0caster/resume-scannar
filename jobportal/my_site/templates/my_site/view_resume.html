@@ -1,7 +1,7 @@
 {% extends 'my_site/index.html' %}
 
 {% block body %}
-    <div class="container mt-5">
+    {% comment %} <div class="container mt-5">
         <h2>Resume Details</h2>
         <dl class="row">
             <dt class="col-sm-3">Candidate Name</dt>
@@ -13,6 +13,119 @@
             </dd>
 
             <!-- Add more details as needed -->
+            <dt class = "col-sm-3">LinkedIn Analysis</dt>
+            <dd class = "col-sm-9">
+                {{profile}}
+            </dd>
         </dl>
+    </div> {% endcomment %}
+    <div class="container mt-5 my-4">
+        <div class="row table table-striped">
+            <div class="col-md-6">
+                <h2>Resume Analysis</h2>
+                <dl class="row">
+                    <dt class="col-sm-3">Candidate Name</dt>
+                    <dd class="col-sm-9">{{ apply_job.name }}</dd>
+
+                    <dt class="col-sm-3">Resume File</dt>
+                    <dd class="col-sm-9">
+                        <a href="{{ apply_job.resume.url }}" target="_blank">{{ apply_job.resume.name }}</a>
+                    </dd>
+
+                    <!-- Add more details as needed -->
+                    <!--LinkedIn Data-->
+                    <!--Heading of LinkedIn-->
+                    <dt class="col-sm-3">LinkedIn Heading</dt>
+                    <dd class="col-sm-9">
+                        {{ profile }}
+                        
+                    </dd>
+                    <!--Experiences from LinkedIn-->
+                    <dt class="col-sm-3">Experiences</dt>
+                    <dd class="col-sm-9">
+                        {{ experience }}
+                        
+                    </dd>
+
+                    <!--Education from LinkedIn-->
+                    <dt class="col-sm-3">Education</dt>
+                    <dd class="col-sm-9">
+                        {{ education }}
+                        
+                    </dd>
+                    
+                    <!--Activities from LinkedIn-->
+                    <dt class="col-sm-3">Activities</dt>
+                    <dd class="col-sm-9">
+                        {{ activities | slice:":500" }}
+                        
+                    </dd>
+
+                    <!--Certifications from LinkedIn-->
+                    <dt class="col-sm-3">Certifications</dt>
+                    <dd class="col-sm-9">
+                        {{ certification }}
+                        
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="col-md-6">
+                <h2>LinkedIn Profile Analysis</h2>
+                <canvas id="sentimentChart" width="400" height="400" style="display: block; box-sizing: border-box; height: 320px; width: 550px;"></canvas>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block js%}
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Get sentiment scores from the Django view
+        var experiences_sentiment = {{ experience_sentiment }};
+        var activities_sentiment = {{ activities_sentiment }};
+        var certifications_sentiment = {{ certifications_sentiment }};
+
+        console.log(experiences_sentiment)
+        console.log(activities_sentiment)
+        console.log(certifications_sentiment)
+        // Create Chart.js chart
+        var ctx = document.getElementById('sentimentChart').getContext('2d');
+        var sentimentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Experiences', 'Activities', 'Certifications'],
+                datasets: [{
+                    label: 'Sentiment Score',
+                    data: [experiences_sentiment, activities_sentiment, certifications_sentiment],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Sentiment Analysis'
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}
