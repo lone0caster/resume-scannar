@@ -35,6 +35,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 #importing linkedin bot
 from my_site.linkedin import LinkedInBot
+from my_site.github import GitHubBot
+import pandas as pd
 # importing nltk and sentiment analyzer
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -296,6 +298,8 @@ def view_resume(request, candidate_name):
     apply_job = Apply_job.objects.get(resume=candidate_name)
     # print(apply_job.linkedin)
     linkedin_url = apply_job.linkedin
+    github_url = apply_job.github
+    
     # Example usage:
     bot = LinkedInBot()
     # bot.open_url('https://www.linkedin.com/in/meetsatra/')
@@ -314,6 +318,28 @@ def view_resume(request, candidate_name):
     print(experience_sentiment['compound'], activities_sentiment['compound'], certification_sentiment['compound'])
     print("Printing profile: ", linkedin_profile)
 
+    # Github Scapping
+    git_bot = GitHubBot()
+    git_bot.open_url(github_url)
+    git_bot.click_repositories_tab()
+    titles, languages = git_bot.scrape_repositories_data()
+    data = {
+        'Title': titles, 
+        'Programming Language': languages,
+    }
+
+    df = pd.DataFrame(data)
+    print(df)
+
+    # count the frequency of programming language
+    language_counts = df['Programming Language'].value_counts()
+
+    # convert the frequency counts to dictionary
+    language_data = {
+        'labels' : language_counts.index.tolist(),
+        'values' : language_counts.values.tolist()
+    }
+
     # Dictionary for rendering in the template
     context = {
         'apply_job' : apply_job,
@@ -325,6 +351,8 @@ def view_resume(request, candidate_name):
         'experience_sentiment' : experience_sentiment['compound'],
         'activities_sentiment' : activities_sentiment['compound'],
         'certifications_sentiment' : certification_sentiment['compound'],
+        'project_data' : language_data,
+        'titles': titles,
     }
     return render(request, 'my_site/view_resume.html', context)
 

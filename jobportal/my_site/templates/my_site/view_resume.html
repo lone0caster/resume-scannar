@@ -74,6 +74,20 @@
                 <h2>LinkedIn Profile Analysis</h2>
                 <canvas id="sentimentChart" width="400" height="400" style="display: block; box-sizing: border-box; height: 320px; width: 550px;"></canvas>
             </div>
+
+            <div class="col-md-6">
+                <h2>Projects</h2>
+                <ul>
+                    {% for title in titles %}
+                        <li>{{ title }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="col-md-6">
+                <h2>Programming Languages Usage</h2>
+                <canvas id="languageChart" width="400" height="200"></canvas>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -127,5 +141,29 @@
                 }
             }
         });
+    
+    //Github Chart
+    var languageData = {{ project_data|safe }};
+    var ctx = document.getElementById('languageChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: languageData.labels,
+            datasets: [{
+                label: 'Frequency',
+                data: languageData.values,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
     </script>
 {% endblock %}
